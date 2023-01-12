@@ -2,14 +2,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -33,6 +36,11 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
 
+    /* Pneumatics */
+    private final Compressor comp = new Compressor(1, PneumaticsModuleType.REVPH);
+    DoubleSolenoid exampleDouble = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 2);
+
+    
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -45,6 +53,20 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
+
+        //Double Solenoid Switch
+        if (driver.getRawButton(1)){
+            exampleDouble.set(DoubleSolenoid.Value.kForward);
+        } else if (driver.getRawButton(2)){
+            exampleDouble.set(DoubleSolenoid.Value.kReverse);    
+        }
+
+        //Compressor On/Off
+        if (driver.getRawButton(3)){
+            comp.enableDigital();
+        } else if (driver.getRawButton(4)){
+            comp.disable();
+        }
 
         // Configure the button bindings
         configureButtonBindings();
